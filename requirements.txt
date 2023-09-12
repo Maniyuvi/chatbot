@@ -3,3 +3,9 @@ langchain
 pinecone-client
 python-dotenv
 openai
+tiktoken
+streamlit_chat
+sentence_transformers
+unstructured
+unstructured[local-inference]
+pinecone-client
