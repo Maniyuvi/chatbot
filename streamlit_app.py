@@ -1,44 +1,72 @@
-# Loading documents from a directory with LangChain
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationChain
+from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+from langchain.prompts import (
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+    ChatPromptTemplate,
+    MessagesPlaceholder
+)
 import streamlit as st
-import pinecone
-from langchain.vectorstores import Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
-import os
-from langchain.llms import OpenAI
-from langchain.chains import RetrievalQA
+from streamlit_chat import message
+from utils import *
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def main():
-    st.header("Chat with PDF 💬")
-    # embeddings
-    embeddings = OpenAIEmbeddings()
 
-    #pinecone init
-    pinecone.init(
-    api_key="2d229696-dd58-4f6d-827c-b8a7523f55de",
-    environment="gcp-starter"
-    )
-    index_name = "source-data"
+st.title("Personal AI Bot")
 
-    # connect to index
-    index = pinecone.Index(index_name)
-    # view index stats
-    index.describe_index_stats()
+if 'responses' not in st.session_state:
+    st.session_state['responses'] = ["How can I assist you?"]
 
-    # Accept user questions/query
-    query = st.text_input("Ask questions about your file")
+if 'requests' not in st.session_state:
+    st.session_state['requests'] = []
 
-    vector_store = Pinecone(index, embeddings.embed_query, "text")
+llm = ChatOpenAI(temperature=0, model='gpt-3.5-turbo') ## find at platform.openai.com
 
-    qa = RetrievalQA.from_chain_type(llm=OpenAI(temperature=0), chain_type="stuff", retriever=vector_store.as_retriever())
+if 'buffer_memory' not in st.session_state:
+            st.session_state.buffer_memory=ConversationBufferWindowMemory(k=3,return_messages=True)
 
-    answer = qa.run(query)
 
-    print('ans :::::',answer )
+system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer the question as truthfully as possible using the provided context, 
+and if the answer is not contained within the text below, say 'I don't know'""")
 
-    st.write(answer)
 
-if __name__ == "__main__":
-    main()
+human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
+
+prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
+
+conversation = ConversationChain(memory=st.session_state.buffer_memory, prompt=prompt_template, llm=llm, verbose=True)
+
+
+# container for chat history
+response_container = st.container()
+# container for text box
+textcontainer = st.container()
+
+
+with textcontainer:
+    query = st.text_input("Query: ", key="input")
+    if query:
+        with st.spinner("typing..."):
+            conversation_string = get_conversation_string()
+            print('conversation_string ::::: ::: ',conversation_string)
+            # st.code(conversation_string)
+            refined_query = query_refiner(conversation_string, query)
+            print('refined_query :::::', refined_query)
+            st.subheader("Refined Query:")
+            st.write(refined_query)
+            context = find_match(refined_query)
+            # print(context)  
+            response = conversation.predict(input=f"Context:\n {context} \n\n Query:\n{query}")
+        st.session_state.requests.append(query)
+        st.session_state.responses.append(response) 
+with response_container:
+    if st.session_state['responses']:
+
+        for i in range(len(st.session_state['responses'])):
+            message(st.session_state['responses'][i],key=str(i))
+            if i < len(st.session_state['requests']):
+                message(st.session_state["requests"][i], is_user=True,key=str(i)+ '_user')
+
