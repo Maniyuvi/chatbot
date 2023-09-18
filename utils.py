@@ -3,8 +3,10 @@ import pinecone
 import openai
 import streamlit as st
 import os
+from dotenv import load_dotenv
 
-openai.api_key = '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'
+load_dotenv()
+
 embed_model = "text-embedding-ada-002"
 
 pinecone.init(api_key='2d229696-dd58-4f6d-827c-b8a7523f55de',
