@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-st.title("Personal AI Bot")
+st.title("Chat with PDF 💬")
 
 if 'responses' not in st.session_state:
     st.session_state['responses'] = ["How can I assist you?"]
