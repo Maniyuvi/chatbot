@@ -4,12 +4,12 @@ import openai
 import streamlit as st
 import json
 
-def load_api_key(secrets_file="secrets.json"):
-    with open(secrets_file) as f:
-        secrets = json.load(f)
-    return secrets["OPENAI_API_KEY"]
+# def load_api_key(secrets_file="secrets.json"):
+#     with open(secrets_file) as f:
+#         secrets = json.load(f)
+#     return secrets["OPENAI_API_KEY"]
 
-api_key = load_api_key()
+# api_key = load_api_key()
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
