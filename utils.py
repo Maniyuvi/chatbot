@@ -2,17 +2,23 @@ from sentence_transformers import SentenceTransformer
 import pinecone
 import openai
 import streamlit as st
-import os
-from dotenv import load_dotenv
+import json
 
-load_dotenv()
+def load_api_key(secrets_file="secrets.json"):
+    with open(secrets_file) as f:
+        secrets = json.load(f)
+    return secrets["OPENAI_API_KEY"]
+
+api_key = load_api_key()
+
+openai.api_key = api_key
 
 embed_model = "text-embedding-ada-002"
 
 pinecone.init(api_key='2d229696-dd58-4f6d-827c-b8a7523f55de',
               environment='gcp-starter'
              )
-index_name = "source-data"
+index_name = "data-source"
 index = pinecone.Index(index_name) # index name from pinecone)
 
 
