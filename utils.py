@@ -11,7 +11,7 @@ def load_api_key(secrets_file="secrets.json"):
 
 api_key = load_api_key()
 
-openai.api_key = api_key
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 embed_model = "text-embedding-ada-002"
 
