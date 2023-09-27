@@ -4,21 +4,29 @@ import openai
 import streamlit as st
 import json
 
+#Local run
 # def load_api_key(secrets_file="secrets.json"):
 #     with open(secrets_file) as f:
 #         secrets = json.load(f)
 #     return secrets["OPENAI_API_KEY"]
 
 # api_key = load_api_key()
+# openai.api_key = api_key
 
+#Streamlit Run
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-embed_model = "text-embedding-ada-002"
 
-pinecone.init(api_key='2d229696-dd58-4f6d-827c-b8a7523f55de',
-              environment='gcp-starter'
+embed_model = "text-embedding-ada-002"
+pinecone_api_key = st.secrets["PINECONE_API_KEY"]
+pinecone_environment = st.secrets["PINECONE_ENVIRONMENT"]
+pinecone_index = st.secrets["PINECONE_INDEX"]
+
+
+pinecone.init(api_key=pinecone_api_key,
+              environment=pinecone_environment
              )
-index_name = "data-source"
+index_name = pinecone_index
 index = pinecone.Index(index_name) # index name from pinecone)
 
 
