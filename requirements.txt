@@ -1,14 +1,13 @@
-streamlit
+streamlit==1.28.1
 langchain
 pinecone-client
 python-dotenv
-openai
-tiktoken
+openai==0.28.0
 streamlit_chat
 sentence_transformers
 unstructured
 unstructured[local-inference]
 pinecone-client
+streamlit_lottie
 PyPDF2
 docx2txt
-streamlit_lottie
