@@ -9,3 +9,5 @@ sentence_transformers
 unstructured
 unstructured[local-inference]
 pinecone-client
+PyPDF2
+docx2txt
