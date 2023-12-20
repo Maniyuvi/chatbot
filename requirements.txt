@@ -11,3 +11,4 @@ unstructured[local-inference]
 pinecone-client
 PyPDF2
 docx2txt
+streamlit_lottie
