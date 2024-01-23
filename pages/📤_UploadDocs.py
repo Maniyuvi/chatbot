@@ -5,7 +5,7 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import pinecone
 from langchain.vectorstores import Pinecone
-import docx2txt
+# import docx2txt
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
