@@ -11,3 +11,4 @@ pinecone-client
 streamlit_lottie
 PyPDF2
 docx2txt
+tiktoken
